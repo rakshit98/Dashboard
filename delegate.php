@@ -9,32 +9,30 @@ if (loggedin()==false)
 	echo "Please login.";
 }
 */
+$stm = $conn->prepare("SELECT ")
 $events=100;
-$stmt = $conn->prepare("SELECT events.name,schdl.start_time FROM events,team_config,team,schdl WHERE events.id=team.event_id AND events.id=schdhl.event_id AND team.id=team_config.team_id AND team_config.delno= ?;");
+$stmt = $conn->prepare("SELECT tblevents.event_name,schdl.start_time FROM tblevents,tbleventreg,tblteams,schdl WHERE tblevents.event_id=schdl.event_id AND tblevents.event_id=tbleventreg.event_id AND tbleventreg.team_id=tblteams.team_id AND schdl.round = $round AND tblteams.del_card_no=?;");
 $stmt->bind_param('s',$events);
-
-    $stmt->execute();
-    $result = $stmt -> get_result();
-    if(($result->num_rows) > 0)
+$stmt->execute();
+$result = $stmt -> get_result();
+ if(($result->num_rows) > 0)
 										{
 											echo "$result->num_rows events \n ";
 											while($row = $result -> fetch_assoc())
 											{
 												foreach ($row as $key => $value) 
 											{
-													if($key=="events.name")
+													if($key=="event_name")
 														{$val="Event: ";}
-													echo "$val $value\n";
-													if($key=="")
+													if($key=="start_time")
+														{$val="Start Time: ";}
+													echo "$val as $value<br>"	;
 														
 											}	
 											
 											}
-									}
+													}
+									
     $stmt -> close();
     $conn -> close();
-?>
-<?php
-//echo $_SESSION['delno'];
-
 ?>
